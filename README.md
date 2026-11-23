@@ -7,7 +7,8 @@
 A newspaper-style front page summing up world news of Monday 23 November 2026.
 Every story carries its source in the image itself (France 24, Reuters,
 Al Jazeera, AP, the Independent, Xinhua, CNN and more), and nothing in the
-paper was invented: all 50 stories were first reported on 23 November 2026.
+paper was invented: all 50 stories happened or were first reported on
+23 November 2026.
 
 ## Stories at a glance — the 3 top stories
 
@@ -28,13 +29,16 @@ world map.
 
 `entry.png` (1024 × 1024) is an illustrated newspaper front page in colour:
 
-- Masthead **THE WORLD** with **Monday 23 November 2026** prominent, and
-  a colour legend for the seven regions (Middle East, Europe, Asia-Pacific,
-  Americas, Africa, World, Sport & Culture).
+- Masthead **THE WORLD** with **Monday 23 November 2026** prominent.
+- **A stats row** of six big numbers: 7 naval drones sank the Merkury,
+  14 killed in Russian strikes, 153 Russian drones fired overnight,
+  +2.2% TAIEX rebound, 99% of Gaza showing contamination, 59,500
+  passengers hit by the Belgium shutdown.
+- **THE DAY IN UTC**, seven sourced times from 02:22 to 08:22.
 - **3 illustrated top stories** with flat vector-style scenes drawn in code:
-  a night sea off Benghazi with the listing corvette Merkury burning, a
-  night sky over Dymer with drone silhouettes and air-defence bursts, and
-  a globe with a crossed-out oil drop for the COP31 fallout.
+  a night sea off Benghazi with the burning corvette Merkury, a night sky
+  over Dymer with drones and air-defence bursts, and a globe with a
+  crossed-out oil drop for the COP31 fallout.
 - **10 mid stories**, each with a small icon, a headline and a one-line deck.
 - **A dot-matrix world map** with ten numbered pins, and a numbered list
   carrying the remaining **37 stories**, one line each.
@@ -55,13 +59,13 @@ Wellington Test draw and COP31 drawing a record 92,000 people.
 
 The image is drawn entirely in code by `main.ts` (Node 22, standard library
 only, no network). It embeds real vector font outlines (DejaVu Serif Bold
-for the masthead and headlines, DejaVu Sans for body text), filled with a
-3x-supersampled scanline rasterizer so the letterforms read as normal
-newspaper type, draws the masthead, the three illustrated scenes, the
-mid-story icons, the dot-matrix world map (land as a union of ellipses) and
-the DATE CHECK box, and encodes the PNG itself with `node:zlib` (deflate)
-and a hand-rolled CRC32 — so the output is deterministic: no timestamps,
-no randomness.
+for the masthead and headlines, DejaVu Sans for body text), filled with an
+even-odd scanline rasterizer at 3x supersampling so the letterforms read as
+normal newspaper type, draws the masthead, the stats row, the UTC timeline,
+the three illustrated scenes, the mid-story icons, the dot-matrix world map
+(with land as a union of ellipses) and the DATE CHECK box, and encodes the
+PNG itself with `node:zlib` (deflate) and a hand-rolled CRC32 — so the
+output is deterministic: no timestamps, no randomness.
 
 ```sh
 mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
@@ -76,16 +80,14 @@ mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 sha256sum out/entry.png
 ```
 
-Expected: a 1024 × 1024 PNG of 119,314 bytes, SHA-256
-`9406c5e073457848f0757b84ae6b136c58efd1adedb3531c24d1e3111ec5f51f`.
+Expected: a 1024 × 1024 PNG of 125,247 bytes, SHA-256
+`78ecf08119bad116f9aafcf7014a705342d8b8232a1f3681972b58fbc1ab0b47`.
 Two runs in different directories produce byte-identical files.
 
 The build also runs a fit check first and prints `fitOk=true` only when every
 top headline fits in two lines, every top deck in two, every mid headline
-in two, every mid deck in one line, and every numbered story in one line.
-After a visual check, the stats labels were shortened so the first label
-fits its cell, and the timeline was laid out in four columns so all seven
-sourced UTC times fit without crowding the top stories.
+and deck in one line, every timeline item in two lines, and every numbered
+story in one line — and the page ends inside the frame.
 
 ## License
 
